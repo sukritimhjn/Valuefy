@@ -47,21 +47,21 @@ class MultiThreadScraper:
             else:
                 result = res.result()
                 resp = result 
-                if resp and resp.getcode() == 200:
+                if resp :
                     try:
-                        respData = resp.read().decode('utf-8')
+                        respData = resp.decode('utf-8')
                         self.parse_links(str(respData))
                     except Exception as e:
                         #swallow exception
-                        #print(str(e) + ' hello' + str(resp.read()))
+                        #print('post_scrape_callback Error : ' + str(e) + ' hello' + str(resp.decode('utf-8')))
                         return
                 
     def scrape_page(self, url):
+        #try: get_connection, get_data; finally: release connection
         try:
-            # get_connection, get_data, try ke andar finally release connection
-            #connection pooling to be added
+            #connection pooling 
             conn = self.ConnectionPool.get_connection()
-            resp = conn.get_data()
+            resp = conn.get_data(url)
             '''
             headers = {}
             headers['User-Agent'] = "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1312.27 Safari/537.17"
@@ -70,11 +70,13 @@ class MultiThreadScraper:
             resp = urllib.request.urlopen(req, timeout=10)
             '''
             return resp
-        except Exception:
+        except Exception as e:
+            #print('scrape_page error : '+ str(e))
             # log exception
             # swallow exception
             pass
-            
+        finally:
+            self.ConnectionPool.release_connection(conn)
 
     def run_scraper(self):
         while True:
@@ -88,7 +90,7 @@ class MultiThreadScraper:
                 self.ConnectionPool.end_pool()
                 return (self._allInternalURLS, self.scraped_pages)
             except Exception as e:
-                print(e)
+                #print('run_scraper error : '+ str(e))
                 continue
 
 if __name__ == '__main__':

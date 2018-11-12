@@ -64,13 +64,13 @@ class ReusableConnection:
 			url = urlparse(some_medium_url)
 			resource = url.path or '/'
 
-			request = ("GET " + resource + " HTTP/1.0\r\nHost: medium.com\r\n\r\n")
+			request = ("GET " + resource + " HTTP/1.1\r\nHost: medium.com\r\n\r\n")
 			request = request.encode("utf-8")
 			self._wrappedSocket.sendall(request)
 
 			while True:
 				response = self._wrappedSocket.recv(1024)
-				
+				#print(response)
 				if response == b'0\r\n\r\n': break
 				html_data += response
 				#print(html_data)

@@ -1,7 +1,7 @@
 # WEB SCRAPING
 Scrapping 'https://www.medium.com'
 
-Extarcting all internal URLs from all pages of medium.com, recursively without using any external scraping library;
+Extracting all internal URLs from all pages of medium.com, recursively without using any external scraping library;
 and keeping the connection pooling size equal to 5 at all times.
 
 1) The programe runs best in Python 3.7.0
